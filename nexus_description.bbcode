@@ -1,10 +1,10 @@
-[center][url=https://github.com/CyrixJD115/AI-Limit_DifficultyScaling_Mod][img]https://github.com/CyrixJD115/AI-Limit_DifficultyScaling_Mod/raw/main/ail_banner_1920x1080.jpg[/img][/url][/center]
+[center][url=https://github.com/CyrixJD115/AI-Limit_DifficultyScaling_Mod][img]https://github.com/CyrixJD115/AI-Limit_DifficultyScaling_Mod/raw/main/assets/ail_banner_1920x1080.jpg[/img][/url][/center]
 
 [b]AI Limit - Difficulty Scaling[/b]
 
 Difficulty scaling mod for AI Limit. Pick a preset, drop it in, play.
 
-A MelonLoader mod for [b]AI Limit[/b] that lets you customize game difficulty through presets. Choose from 11 difficulty levels ranging from God Mode to Torment.
+A MelonLoader mod for [b]AI Limit[/b] that lets you customize game difficulty through presets. Choose from 5 difficulty levels plus a custom preset.
 
 [b]Requirements[/b]
 
@@ -22,23 +22,18 @@ A MelonLoader mod for [b]AI Limit[/b] that lets you customize game difficulty th
 [code]<game>/Mods/
     DifficultyScaling.dll
     DifficultyScaling_cfg/
-        difficulty.05_normal
+        difficulty.03_normal
         Difficulty/
             00_custom/scaling.toml
-            01_god_mode/scaling.toml
-            02_story/scaling.toml
-            03_relaxed/scaling.toml
-            04_easy/scaling.toml
-            05_normal/scaling.toml
-            06_adept/scaling.toml
-            07_hard/scaling.toml
-            08_master/scaling.toml
-            09_nightmare/scaling.toml
-            10_torment/scaling.toml[/code]
+            01_story/scaling.toml
+            02_easy/scaling.toml
+            03_normal/scaling.toml
+            04_adept/scaling.toml
+            05_hard/scaling.toml[/code]
 
 [list]
-[*][b]Select your difficulty[/b] by renaming the flag file. For example, to play on Hard, rename:
-[b]difficulty.05_normal[/b] → [b]difficulty.07_hard[/b]
+[*][b]Select your difficulty[/b] by renaming the flag file. For example, to play on Easy, rename:
+[b]difficulty.03_normal[/b] → [b]difficulty.02_easy[/b]
 [/list]
 
 [b]How to Change Difficulty[/b]
@@ -47,16 +42,11 @@ The mod reads the empty flag file named [b]difficulty.<preset>[/b] to determine 
 
 [list]
 [*][b]difficulty.00[/b] or [b]difficulty.custom[/b] — Custom (edit the TOML yourself)
-[*][b]difficulty.01[/b] or [b]difficulty.god_mode[/b] — God Mode
-[*][b]difficulty.02[/b] or [b]difficulty.story[/b] — Story
-[*][b]difficulty.03[/b] or [b]difficulty.relaxed[/b] — Relaxed
-[*][b]difficulty.04[/b] or [b]difficulty.easy[/b] — Easy
-[*][b]difficulty.05[/b] or [b]difficulty.normal[/b] — Normal
-[*][b]difficulty.06[/b] or [b]difficulty.adept[/b] — Adept (base game values)
-[*][b]difficulty.07[/b] or [b]difficulty.hard[/b] — Hard
-[*][b]difficulty.08[/b] or [b]difficulty.master[/b] — Master
-[*][b]difficulty.09[/b] or [b]difficulty.nightmare[/b] — Nightmare
-[*][b]difficulty.10[/b] or [b]difficulty.torment[/b] — Torment
+[*][b]difficulty.01[/b] or [b]difficulty.story[/b] — Story
+[*][b]difficulty.02[/b] or [b]difficulty.easy[/b] — Easy
+[*][b]difficulty.03[/b] or [b]difficulty.normal[/b] — Normal
+[*][b]difficulty.04[/b] or [b]difficulty.adept[/b] — Adept (base game values)
+[*][b]difficulty.05[/b] or [b]difficulty.hard[/b] — Hard
 [/list]
 
 Only one [b]difficulty.*[/b] file should exist at a time.
@@ -64,16 +54,11 @@ Only one [b]difficulty.*[/b] file should exist at a time.
 [b]Preset Values[/b]
 
 [list]
-[*][b]God Mode[/b] — Monster Atk x0.3 | Monster Def x0.3 | Player Atk x1.5 | Player Def x1.5 | Player HP x2.0
-[*][b]Story[/b] — Monster Atk x0.4 | Monster Def x0.45 | Player Atk x1.2 | Player Def x1.2 | Player HP x1.5
-[*][b]Relaxed[/b] — Monster Atk x0.6 | Monster Def x0.65 | Player Atk x1.2 | Player Def x1.2 | Player HP x1.35
-[*][b]Easy[/b] — Monster Atk x0.7 | Monster Def x0.75 | Player Atk x1.2 | Player Def x1.2 | Player HP x1.2
-[*][b]Normal[/b] — Monster Atk x0.8 | Monster Def x0.85 | Player Atk x1.05 | Player Def x1.05 | Player HP x1.2
+[*][b]Story[/b] — Monster Atk x0.4 | Monster Def x0.4 | Player Atk x1.5 | Player Def x1.2 | Player HP x1.5
+[*][b]Easy[/b] — Monster Atk x0.6 | Monster Def x0.6 | Player Atk x1.2 | Player Def x1.2 | Player HP x1.35
+[*][b]Normal[/b] — Monster Atk x0.8 | Monster Def x0.85 | Player Atk x1.1 | Player Def x1.1 | Player HP x1.2
 [*][b]Adept[/b] — Monster Atk x1.0 | Monster Def x1.0 | Player Atk x1.0 | Player Def x1.0 | Player HP x1.0
-[*][b]Hard[/b] — Monster Atk x1.1 | Monster Def x1.15 | Player Atk x1.0 | Player Def x1.0 | Player HP x0.95
-[*][b]Master[/b] — Monster Atk x1.2 | Monster Def x1.25 | Player Atk x0.9 | Player Def x0.9 | Player HP x0.9
-[*][b]Nightmare[/b] — Monster Atk x1.35 | Monster Def x1.4 | Player Atk x0.85 | Player Def x0.85 | Player HP x0.9
-[*][b]Torment[/b] — Monster Atk x1.5 | Monster Def x1.55 | Player Atk x0.8 | Player Def x0.8 | Player HP x0.85
+[*][b]Hard[/b] — Monster Atk x1.2 | Monster Def x1.25 | Player Atk x0.9 | Player Def x0.9 | Player HP x0.9
 [/list]
 
 All multipliers are relative to the base game. [b]Adept[/b] is identical to vanilla.
