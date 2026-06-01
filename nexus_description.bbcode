@@ -4,7 +4,7 @@
 
 Difficulty scaling mod for AI Limit. Pick a preset, drop it in, play.
 
-A MelonLoader mod for [b]AI Limit[/b] that lets you customize game difficulty through presets. Choose from 5 difficulty levels plus a custom preset.
+A MelonLoader mod for [b]AI Limit[/b] that lets you customize game difficulty through presets. Choose from 5 difficulty levels plus a custom preset. Scales monster stats, player stats, and crystal drops.
 
 [b]Requirements[/b]
 
@@ -54,11 +54,11 @@ Only one [b]difficulty.*[/b] file should exist at a time.
 [b]Preset Values[/b]
 
 [list]
-[*][b]Story[/b] — Monster Atk x0.4 | Monster Def x0.4 | Player Atk x1.5 | Player Def x1.2 | Player HP x1.5
-[*][b]Easy[/b] — Monster Atk x0.6 | Monster Def x0.6 | Player Atk x1.2 | Player Def x1.2 | Player HP x1.35
-[*][b]Normal[/b] — Monster Atk x0.8 | Monster Def x0.85 | Player Atk x1.1 | Player Def x1.1 | Player HP x1.2
-[*][b]Adept[/b] — Monster Atk x1.0 | Monster Def x1.0 | Player Atk x1.0 | Player Def x1.0 | Player HP x1.0
-[*][b]Hard[/b] — Monster Atk x1.2 | Monster Def x1.25 | Player Atk x0.9 | Player Def x0.9 | Player HP x0.9
+[*][b]Story[/b] — Monster Atk x0.4 | Monster Def x0.4 | Player Atk x1.5 | Player Def x1.2 | Player HP x1.5 | Crystal x1.5
+[*][b]Easy[/b] — Monster Atk x0.6 | Monster Def x0.6 | Player Atk x1.2 | Player Def x1.2 | Player HP x1.35 | Crystal x1.3
+[*][b]Normal[/b] — Monster Atk x0.8 | Monster Def x0.85 | Player Atk x1.1 | Player Def x1.1 | Player HP x1.2 | Crystal x1.15
+[*][b]Adept[/b] — Monster Atk x1.0 | Monster Def x1.0 | Player Atk x1.0 | Player Def x1.0 | Player HP x1.0 | Crystal x1.0
+[*][b]Hard[/b] — Monster Atk x1.2 | Monster Def x1.25 | Player Atk x0.9 | Player Def x0.9 | Player HP x0.9 | Crystal x0.95
 [/list]
 
 All multipliers are relative to the base game. [b]Adept[/b] is identical to vanilla.
@@ -71,7 +71,8 @@ Edit [b]DifficultyScaling_cfg/Difficulty/00_custom/scaling.toml[/b] with your ow
 monster_defense_multiplier = 0.85
 player_attack_multiplier = 1.05
 player_defense_multiplier = 1.05
-player_hp_multiplier = 1.2[/code]
+player_hp_multiplier = 1.2
+crystal_multiplier = 1.0[/code]
 
 [b]Debug Logging[/b]
 

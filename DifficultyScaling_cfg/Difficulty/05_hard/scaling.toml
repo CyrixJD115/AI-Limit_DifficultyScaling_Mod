@@ -9,4 +9,7 @@ player_attack_multiplier = 0.9
 player_defense_multiplier = 0.9
 player_hp_multiplier = 0.9
 
+# === Economy Scaling ===
+crystal_multiplier = 0.95
+
 debug = false

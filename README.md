@@ -2,7 +2,7 @@
 
 Difficulty scaling mod for AI Limit. Pick a preset, drop it in, play.
 
-A MelonLoader mod for **AI Limit** that lets you customize game difficulty through presets. Choose from 5 difficulty levels plus a custom preset.
+A MelonLoader mod for **AI Limit** that lets you customize game difficulty through presets. Choose from 5 difficulty levels plus a custom preset. Scales monster stats, player stats, and crystal drops.
 
 ## Requirements
 
@@ -45,13 +45,13 @@ Only one `difficulty.*` file should exist at a time.
 
 ## Preset Values
 
-| Preset | Monster Atk | Monster Def | Player Atk | Player Def | Player HP |
-|---|---|---|---|---|---|
-| Story | x0.4 | x0.4 | x1.5 | x1.2 | x1.5 |
-| Easy | x0.6 | x0.6 | x1.2 | x1.2 | x1.35 |
-| Normal | x0.8 | x0.85 | x1.1 | x1.1 | x1.2 |
-| Adept | x1.0 | x1.0 | x1.0 | x1.0 | x1.0 |
-| Hard | x1.2 | x1.25 | x0.9 | x0.9 | x0.9 |
+| Preset | Monster Atk | Monster Def | Player Atk | Player Def | Player HP | Crystal |
+|---|---|---|---|---|---|---|
+| Story | x0.4 | x0.4 | x1.5 | x1.2 | x1.5 | x1.5 |
+| Easy | x0.6 | x0.6 | x1.2 | x1.2 | x1.35 | x1.3 |
+| Normal | x0.8 | x0.85 | x1.1 | x1.1 | x1.2 | x1.15 |
+| Adept | x1.0 | x1.0 | x1.0 | x1.0 | x1.0 | x1.0 |
+| Hard | x1.2 | x1.25 | x0.9 | x0.9 | x0.9 | x0.95 |
 
 All multipliers are relative to the base game. **Adept** is identical to vanilla.
 
@@ -65,6 +65,7 @@ monster_defense_multiplier = 0.85
 player_attack_multiplier = 1.05
 player_defense_multiplier = 1.05
 player_hp_multiplier = 1.2
+crystal_multiplier = 1.0
 ```
 
 ## Debug Logging
