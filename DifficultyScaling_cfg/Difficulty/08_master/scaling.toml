@@ -1,0 +1,11 @@
+# AI Limit Difficulty Scaling - Master
+# Set values to 1.0 for base game defaults.
+
+# === Monster / Enemy Scaling ===
+monster_attack_multiplier = 1.20
+monster_defense_multiplier = 1.25
+
+# === Player Scaling ===
+player_attack_multiplier = 0.9
+player_defense_multiplier = 0.9
+player_hp_multiplier = 0.9

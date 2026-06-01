@@ -1,0 +1,71 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>DifficultyScaling</AssemblyName>
+    <RootNamespace>DifficultyScaling</RootNamespace>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="src\EasyMod.cs" />
+    <Compile Include="src\TomlConfig.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MelonLoader">
+      <HintPath>/mnt/gaming/Steam/steamapps/common/AI Limit/MelonLoader/net6/MelonLoader.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>/mnt/gaming/Steam/steamapps/common/AI Limit/MelonLoader/net6/0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Il2CppInterop.Runtime">
+      <HintPath>/mnt/gaming/Steam/steamapps/common/AI Limit/MelonLoader/net6/Il2CppInterop.Runtime.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>/mnt/gaming/Steam/steamapps/common/AI Limit/MelonLoader/Il2CppAssemblies/Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Il2Cppmscorlib">
+      <HintPath>/mnt/gaming/Steam/steamapps/common/AI Limit/MelonLoader/Il2CppAssemblies/Il2Cppmscorlib.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Il2CppSystem">
+      <HintPath>/mnt/gaming/Steam/steamapps/common/AI Limit/MelonLoader/Il2CppAssemblies/Il2CppSystem.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Il2CppUnityEngine">
+      <HintPath>/mnt/gaming/Steam/steamapps/common/AI Limit/MelonLoader/Il2CppAssemblies/Il2CppUnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Il2CppUnityEngine.CoreModule">
+      <HintPath>/mnt/gaming/Steam/steamapps/common/AI Limit/MelonLoader/Il2CppAssemblies/Il2CppUnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>/mnt/gaming/Steam/steamapps/common/AI Limit/MelonLoader/Il2CppAssemblies/UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Il2CppSenseGame.Logic">
+      <HintPath>/mnt/gaming/Steam/steamapps/common/AI Limit/MelonLoader/Il2CppAssemblies/Il2CppSenseGame.Logic.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Il2CppSenseGame.Build">
+      <HintPath>/mnt/gaming/Steam/steamapps/common/AI Limit/MelonLoader/Il2CppAssemblies/Il2CppSenseGame.Build.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Il2CppSenseGame.Event">
+      <HintPath>/mnt/gaming/Steam/steamapps/common/AI Limit/MelonLoader/Il2CppAssemblies/Il2CppSenseGame.Event.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Il2CppSenseGame.MonoEx">
+      <HintPath>/mnt/gaming/Steam/steamapps/common/AI Limit/MelonLoader/Il2CppAssemblies/Il2CppSenseGame.MonoEx.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>
