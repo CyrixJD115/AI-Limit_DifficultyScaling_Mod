@@ -6,7 +6,7 @@ using HarmonyLib;
 using Il2Cpp;
 using Il2CppInterop.Runtime;
 
-[assembly: MelonInfo(typeof(DifficultyScaling.ModMain), "AI Limit Difficulty Scaling", "1.0.0", "opencode")]
+[assembly: MelonInfo(typeof(DifficultyScaling.ModMain), "AI Limit Difficulty Scaling", "1.0.0", "CyrixJD115")]
 [assembly: MelonGame("SenseGames", "AILIMIT")]
 
 namespace DifficultyScaling;
