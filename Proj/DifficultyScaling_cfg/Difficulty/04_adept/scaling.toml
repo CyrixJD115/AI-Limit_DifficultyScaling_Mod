@@ -1,6 +1,5 @@
-# AI Limit Difficulty Scaling - Custom
+# AI Limit Difficulty Scaling - Adept
 # Set values to 1.0 for base game defaults.
-# Edit the values below to create your own difficulty preset.
 
 # === Monster / Enemy Scaling ===
 monster_attack_multiplier = 1.0
@@ -10,3 +9,5 @@ monster_defense_multiplier = 1.0
 player_attack_multiplier = 1.0
 player_defense_multiplier = 1.0
 player_hp_multiplier = 1.0
+
+debug = false

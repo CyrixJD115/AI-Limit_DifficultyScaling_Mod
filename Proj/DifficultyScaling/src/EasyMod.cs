@@ -41,7 +41,7 @@ public class ModMain : MelonMod
             var parts = folder.Split('_', 2);
             var num = parts[0];
             var name = parts.Length > 1 ? parts[1] : "";
-            if (num == flagValue || name.ToLowerInvariant() == flagValue)
+            if (folder == flagValue || num == flagValue || name.ToLowerInvariant() == flagValue)
             {
                 matchedDir = d;
                 break;
