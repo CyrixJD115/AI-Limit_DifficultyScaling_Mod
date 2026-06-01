@@ -1,0 +1,12 @@
+# AI Limit Difficulty Scaling - Easy
+
+# === Monster / Enemy Scaling ===
+monster_attack_multiplier = 0.6
+monster_defense_multiplier = 0.6
+
+# === Player Scaling ===
+player_attack_multiplier = 1.2
+player_defense_multiplier = 1.2
+player_hp_multiplier = 1.35
+
+debug = false
