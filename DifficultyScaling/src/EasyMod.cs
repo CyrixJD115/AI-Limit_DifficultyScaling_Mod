@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using MelonLoader;
@@ -6,7 +7,7 @@ using HarmonyLib;
 using Il2Cpp;
 using Il2CppInterop.Runtime;
 
-[assembly: MelonInfo(typeof(DifficultyScaling.ModMain), "AI Limit Difficulty Scaling", "1.0.0", "CyrixJD115")]
+[assembly: MelonInfo(typeof(DifficultyScaling.ModMain), "AI Limit Difficulty Scaling", "1.2.2", "CyrixJD115")]
 [assembly: MelonGame("SenseGames", "AILIMIT")]
 
 namespace DifficultyScaling;
@@ -18,7 +19,13 @@ public class ModMain : MelonMod
     private static float _playerHpMult = 2.0f;
     private static float _playerDefMult = 2.0f;
     private static float _monsterDefMult = 0.4f;
+    private static float _crystalMult = 1.0f;
+    private static float _fallDeathHeightMult = 1.0f;
     private static bool _debug = false;
+    private static bool _crystalScaled = false;
+
+    private const string LOG = "[AI Limit: Difficulty Scaling]";
+    private const string DBG = "[AIL:DS]";
 
     public override void OnInitializeMelon()
     {
@@ -27,7 +34,7 @@ public class ModMain : MelonMod
         var flagFiles = Directory.GetFiles(cfgDir, "difficulty.*");
         if (flagFiles.Length == 0)
         {
-            MelonLogger.Error("No difficulty.* flag file found in DifficultyScaling_cfg/. Mod will use defaults.");
+            MelonLogger.Error($"{LOG} No difficulty.* flag file found in DifficultyScaling_cfg/. Mod will use defaults.");
             return;
         }
 
@@ -50,7 +57,7 @@ public class ModMain : MelonMod
 
         if (matchedDir == null)
         {
-            MelonLogger.Error($"No preset matching '{flagValue}' found. Mod will use defaults.");
+            MelonLogger.Error($"{LOG} No preset matching '{flagValue}' found. Mod will use defaults.");
             return;
         }
 
@@ -62,10 +69,12 @@ public class ModMain : MelonMod
         _playerHpMult = TomlConfig.GetFloat(cfg, "player_hp_multiplier", 2.0f);
         _playerDefMult = TomlConfig.GetFloat(cfg, "player_defense_multiplier", 2.0f);
         _monsterDefMult = TomlConfig.GetFloat(cfg, "monster_defense_multiplier", 0.4f);
+        _crystalMult = TomlConfig.GetFloat(cfg, "crystal_multiplier", 1.0f);
+        _fallDeathHeightMult = TomlConfig.GetFloat(cfg, "fall_death_height_multiplier", _playerHpMult);
         _debug = TomlConfig.GetBool(cfg, "debug", false);
 
-        MelonLogger.Msg($"Difficulty Scaling loaded (preset: {Path.GetFileName(matchedDir)})");
-        MelonLogger.Msg($"PlayerAtk x{_playerAttackMult}, MonsterAtk x{_monsterAttackMult}, PlayerHP x{_playerHpMult}, PlayerDef x{_playerDefMult}, MonsterDef x{_monsterDefMult}, Debug={_debug}");
+        MelonLogger.Msg($"{LOG} Loaded preset: {Path.GetFileName(matchedDir)}");
+        MelonLogger.Msg($"{LOG} PlayerAtk x{_playerAttackMult} | MonsterAtk x{_monsterAttackMult} | PlayerDef x{_playerDefMult} | MonsterDef x{_monsterDefMult} | PlayerHP x{_playerHpMult} | Crystal x{_crystalMult} | FallHeight x{_fallDeathHeightMult}");
     }
 
     public override void OnLateInitializeMelon()
@@ -75,82 +84,100 @@ public class ModMain : MelonMod
         var playerType = typeof(Player);
         var monsterType = typeof(Monster);
 
-        var playerDecreaseHp = playerType.GetMethod("DecreaseHp", new Type[] { typeof(float), typeof(ActorDefine.DeadType), typeof(bool), typeof(bool), typeof(bool) });
-        var monsterDecreaseHp = monsterType.GetMethod("DecreaseHp", new Type[] { typeof(float), typeof(ActorDefine.DeadType), typeof(bool), typeof(bool), typeof(bool) });
-        var playerGetHpMax = playerType.GetMethod("GetHpMaxAttribute", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
-
-        if (_debug)
+        var patches = new (string Name, MethodInfo Method, MethodInfo Prefix, MethodInfo Postfix)[]
         {
-            MelonLogger.Msg($"Player.DecreaseHp: {(playerDecreaseHp != null ? "FOUND" : "NOT FOUND")}");
-            MelonLogger.Msg($"Monster.DecreaseHp: {(monsterDecreaseHp != null ? "FOUND" : "NOT FOUND")}");
-            MelonLogger.Msg($"Player.GetHpMaxAttribute: {(playerGetHpMax != null ? "FOUND" : "NOT FOUND")}");
+            ("Player.DecreaseHp",       playerType.GetMethod("DecreaseHp", new Type[] { typeof(float), typeof(ActorDefine.DeadType), typeof(bool), typeof(bool), typeof(bool) }),
+                typeof(ModMain).GetMethod(nameof(PlayerDecreaseHpPrefix), BindingFlags.Static | BindingFlags.NonPublic), null),
+            ("Monster.DecreaseHp",      monsterType.GetMethod("DecreaseHp", new Type[] { typeof(float), typeof(ActorDefine.DeadType), typeof(bool), typeof(bool), typeof(bool) }),
+                typeof(ModMain).GetMethod(nameof(MonsterDecreaseHpPrefix), BindingFlags.Static | BindingFlags.NonPublic), null),
+            ("Player.GetHpMaxAttribute", playerType.GetMethod("GetHpMaxAttribute", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null),
+                null, typeof(ModMain).GetMethod(nameof(GetHpMaxPostfix), BindingFlags.Static | BindingFlags.NonPublic)),
+            ("Player.GetHPMax", playerType.GetMethod("GetHPMax", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null),
+                null, typeof(ModMain).GetMethod(nameof(GetHpMaxPostfix), BindingFlags.Static | BindingFlags.NonPublic)),
+            ("Player.GetDefenseInfo",   playerType.GetMethod("GetDefenseInfo", new Type[] { typeof(bool) }),
+                null, typeof(ModMain).GetMethod(nameof(PlayerGetDefenseInfoPostfix), BindingFlags.Static | BindingFlags.NonPublic)),
+            ("Monster.GetDefenseInfo",  monsterType.GetMethod("GetDefenseInfo", new Type[] { typeof(bool) }),
+                null, typeof(ModMain).GetMethod(nameof(MonsterGetDefenseInfoPostfix), BindingFlags.Static | BindingFlags.NonPublic)),
+            ("PlayerDefine.GetDeadHigh", typeof(PlayerDefine).GetMethod("get_GetDeadHigh", BindingFlags.Public | BindingFlags.Static, null, Type.EmptyTypes, null),
+                null, typeof(ModMain).GetMethod(nameof(GetDeadHighPostfix), BindingFlags.Static | BindingFlags.NonPublic)),
+        };
+
+        int patched = 0;
+        foreach (var (name, method, prefix, postfix) in patches)
+        {
+            if (method != null)
+            {
+                harmony.Patch(method,
+                    prefix: prefix != null ? new HarmonyMethod(prefix) : null,
+                    postfix: postfix != null ? new HarmonyMethod(postfix) : null);
+                MelonLogger.Msg($"{LOG}   \u2713 {name}");
+                patched++;
+            }
+            else
+            {
+                MelonLogger.Msg($"{LOG}   \u2717 {name} \u2014 NOT FOUND");
+            }
         }
 
-        var prefixDecreaseHpOnPlayer = new HarmonyMethod(typeof(ModMain).GetMethod(nameof(PlayerDecreaseHpPrefix), BindingFlags.Static | BindingFlags.NonPublic));
-        var prefixDecreaseHpOnMonster = new HarmonyMethod(typeof(ModMain).GetMethod(nameof(MonsterDecreaseHpPrefix), BindingFlags.Static | BindingFlags.NonPublic));
-        var postfixGetHpMax = new HarmonyMethod(typeof(ModMain).GetMethod(nameof(GetHpMaxPostfix), BindingFlags.Static | BindingFlags.NonPublic));
-
-        if (playerDecreaseHp != null)
-        {
-            harmony.Patch(playerDecreaseHp, prefix: prefixDecreaseHpOnPlayer);
-            if (_debug) MelonLogger.Msg("Patched Player.DecreaseHp");
-        }
-
-        if (monsterDecreaseHp != null)
-        {
-            harmony.Patch(monsterDecreaseHp, prefix: prefixDecreaseHpOnMonster);
-            if (_debug) MelonLogger.Msg("Patched Monster.DecreaseHp");
-        }
-
-        if (playerGetHpMax != null)
-        {
-            harmony.Patch(playerGetHpMax, postfix: postfixGetHpMax);
-            if (_debug) MelonLogger.Msg("Patched Player.GetHpMaxAttribute");
-        }
-
-        var playerGetDefense = playerType.GetMethod("GetDefenseInfo", new Type[] { typeof(bool) });
-        var monsterGetDefense = monsterType.GetMethod("GetDefenseInfo", new Type[] { typeof(bool) });
-
-        if (_debug)
-        {
-            MelonLogger.Msg($"Player.GetDefenseInfo: {(playerGetDefense != null ? "FOUND" : "NOT FOUND")}");
-            MelonLogger.Msg($"Monster.GetDefenseInfo: {(monsterGetDefense != null ? "FOUND" : "NOT FOUND")}");
-        }
-
-        var postfixPlayerDefense = new HarmonyMethod(typeof(ModMain).GetMethod(nameof(PlayerGetDefenseInfoPostfix), BindingFlags.Static | BindingFlags.NonPublic));
-        var postfixMonsterDefense = new HarmonyMethod(typeof(ModMain).GetMethod(nameof(MonsterGetDefenseInfoPostfix), BindingFlags.Static | BindingFlags.NonPublic));
-
-        if (playerGetDefense != null)
-        {
-            harmony.Patch(playerGetDefense, postfix: postfixPlayerDefense);
-            if (_debug) MelonLogger.Msg("Patched Player.GetDefenseInfo");
-        }
-
-        if (monsterGetDefense != null)
-        {
-            harmony.Patch(monsterGetDefense, postfix: postfixMonsterDefense);
-            if (_debug) MelonLogger.Msg("Patched Monster.GetDefenseInfo");
-        }
-
-        MelonLogger.Msg("Harmony patching complete.");
+        MelonLogger.Msg($"{LOG} Patched {patched}/{patches.Length} methods");
     }
 
-    private static void PlayerDecreaseHpPrefix(ref float value)
+    public override void OnUpdate()
     {
-        if (_debug) MelonLogger.Msg($"[Player.DecreaseHp] value={value} -> {value * _monsterAttackMult}");
+        if (_crystalScaled || _crystalMult == 1.0f) return;
+
+        try
+        {
+            var configData = GlobalConfig.ConfigData;
+            if (configData == null) return;
+
+            var monsterDrops = configData.MonsterDrop;
+            if (monsterDrops == null || monsterDrops.Count == 0) return;
+
+            int count = monsterDrops.Count;
+            for (int i = 0; i < count; i++)
+            {
+                var drop = monsterDrops[i];
+                if (drop == null) continue;
+                drop.Money = (int)Math.Round(drop.Money * _crystalMult);
+            }
+
+            _crystalScaled = true;
+            MelonLogger.Msg($"{LOG} Crystal x{_crystalMult} applied to {count} MonsterDrop entries");
+        }
+        catch (Exception ex)
+        {
+            if (_debug) MelonLogger.Msg($"{DBG} Crystal scaling waiting for data... ({ex.Message})");
+        }
+    }
+
+    private static void PlayerDecreaseHpPrefix(ref float value, ActorDefine.DeadType deadType)
+    {
+        if (deadType == ActorDefine.DeadType.FallDead || deadType == ActorDefine.DeadType.TouchGroundDead)
+        {
+            if (_debug) MelonLogger.Msg($"{DBG} Player DMG   {value} SKIP (deadType={deadType})");
+            return;
+        }
+        if (_debug) MelonLogger.Msg($"{DBG} Player DMG   {value} \u2192 {value * _monsterAttackMult} (x{_monsterAttackMult})");
         value *= _monsterAttackMult;
     }
 
     private static void MonsterDecreaseHpPrefix(ref float value)
     {
-        if (_debug) MelonLogger.Msg($"[Monster.DecreaseHp] value={value} -> {value * _playerAttackMult}");
+        if (_debug) MelonLogger.Msg($"{DBG} Monster HP   {value} \u2192 {value * _playerAttackMult} (x{_playerAttackMult})");
         value *= _playerAttackMult;
     }
 
     private static void GetHpMaxPostfix(ref float __result)
     {
-        if (_debug) MelonLogger.Msg($"[Player.GetHpMaxAttribute] {__result} -> {__result * _playerHpMult}");
+        if (_debug) MelonLogger.Msg($"{DBG} Player HP    {__result} \u2192 {__result * _playerHpMult} (x{_playerHpMult})");
         __result *= _playerHpMult;
+    }
+
+    private static void GetDeadHighPostfix(ref float __result)
+    {
+        if (_debug) MelonLogger.Msg($"{DBG} FallDeadHigh {__result} \u2192 {__result * _fallDeathHeightMult} (x{_fallDeathHeightMult})");
+        __result *= _fallDeathHeightMult;
     }
 
     private static void PlayerGetDefenseInfoPostfix(ref DefenseInfo __result)
@@ -162,9 +189,7 @@ public class ModMain : MelonMod
         __result.nPoisonsDamageReductionRate *= _playerDefMult;
         __result.nPunctureDamageReductionRate *= _playerDefMult;
         __result.nInfectDamageReductionRate *= _playerDefMult;
-        __result.nGetHitConfidenceReductionRate *= _playerDefMult;
-        __result.MaxHp *= _playerDefMult;
-        if (_debug) MelonLogger.Msg($"[Player.GetDefenseInfo] defense scaled x{_playerDefMult}");
+        if (_debug) MelonLogger.Msg($"{DBG} Player Def   scaled x{_playerDefMult}");
     }
 
     private static void MonsterGetDefenseInfoPostfix(ref DefenseInfo __result)
@@ -176,8 +201,6 @@ public class ModMain : MelonMod
         __result.nPoisonsDamageReductionRate *= _monsterDefMult;
         __result.nPunctureDamageReductionRate *= _monsterDefMult;
         __result.nInfectDamageReductionRate *= _monsterDefMult;
-        __result.nGetHitConfidenceReductionRate *= _monsterDefMult;
-        __result.MaxHp *= _monsterDefMult;
-        if (_debug) MelonLogger.Msg($"[Monster.GetDefenseInfo] defense scaled x{_monsterDefMult}");
+        if (_debug) MelonLogger.Msg($"{DBG} Monster Def  scaled x{_monsterDefMult}");
     }
 }

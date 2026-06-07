@@ -11,4 +11,12 @@ player_attack_multiplier = 1.0
 player_defense_multiplier = 1.0
 player_hp_multiplier = 1.0
 
+# === Fall Damage Scaling ===
+# Scales the height threshold before fall death triggers (base: 20 units).
+# Does NOT affect the 15-second void-fall timer (falling into pits with no floor).
+fall_death_height_multiplier = 1.0
+
+# === Economy Scaling ===
+crystal_multiplier = 1.0
+
 debug = false
