@@ -2,8 +2,10 @@
 DifficultyScaling/bin/
 DifficultyScaling/obj/
 
+# Release zips
+Release/
+
 # Not part of the mod source
 GameAssembly_il2cppdump*/
 MelonWiki/
-DifficultyScaling.dll
 diff_plan.txt
