@@ -7,7 +7,7 @@ using HarmonyLib;
 using Il2Cpp;
 using Il2CppInterop.Runtime;
 
-[assembly: MelonInfo(typeof(DifficultyScaling.ModMain), "AI Limit Difficulty Scaling", "1.2.4", "CyrixJD115")]
+[assembly: MelonInfo(typeof(DifficultyScaling.ModMain), "AI Limit Difficulty Scaling", "1.2.5", "CyrixJD115")]
 [assembly: MelonGame("SenseGames", "AILIMIT")]
 
 namespace DifficultyScaling;
@@ -134,8 +134,6 @@ public class ModMain : MelonMod
                 null, typeof(ModMain).GetMethod(nameof(PlayerGetDefenseInfoPostfix), BindingFlags.Static | BindingFlags.NonPublic)),
             ("Monster.GetDefenseInfo",  monsterType.GetMethod("GetDefenseInfo", new Type[] { typeof(bool) }),
                 null, typeof(ModMain).GetMethod(nameof(MonsterGetDefenseInfoPostfix), BindingFlags.Static | BindingFlags.NonPublic)),
-            ("PlayerDefine.GetDeadHigh", typeof(PlayerDefine).GetMethod("get_GetDeadHigh", BindingFlags.Public | BindingFlags.Static, null, Type.EmptyTypes, null),
-                null, typeof(ModMain).GetMethod(nameof(GetDeadHighPostfix), BindingFlags.Static | BindingFlags.NonPublic)),
         };
 
         int patched = 0;
@@ -189,9 +187,15 @@ public class ModMain : MelonMod
 
     private static void PlayerDecreaseHpPrefix(ref float value, ActorDefine.DeadType deadType)
     {
-        if (deadType == ActorDefine.DeadType.FallDead || deadType == ActorDefine.DeadType.TouchGroundDead)
+        if (deadType == ActorDefine.DeadType.FallDead)
         {
-            if (_debug) MelonLogger.Msg($"{DBG} Player DMG   {value} SKIP (deadType={deadType})");
+            if (_debug) MelonLogger.Msg($"{DBG} Player DMG   {value} SKIP (void fall timer not scaled)");
+            return;
+        }
+        if (deadType == ActorDefine.DeadType.TouchGroundDead)
+        {
+            value /= _fallDeathHeightMult;
+            if (_debug) MelonLogger.Msg($"{DBG} Player DMG   {value} (fall height x{_fallDeathHeightMult})");
             return;
         }
         if (_debug) MelonLogger.Msg($"{DBG} Player DMG   {value} \u2192 {value * _monsterAttackMult} (x{_monsterAttackMult})");
@@ -208,12 +212,6 @@ public class ModMain : MelonMod
     {
         if (_debug) MelonLogger.Msg($"{DBG} Player HP    {__result} \u2192 {__result * _playerHpMult} (x{_playerHpMult})");
         __result *= _playerHpMult;
-    }
-
-    private static void GetDeadHighPostfix(ref float __result)
-    {
-        if (_debug) MelonLogger.Msg($"{DBG} FallDeadHigh {__result} \u2192 {__result * _fallDeathHeightMult} (x{_fallDeathHeightMult})");
-        __result *= _fallDeathHeightMult;
     }
 
     private static void PlayerGetDefenseInfoPostfix(ref DefenseInfo __result)
