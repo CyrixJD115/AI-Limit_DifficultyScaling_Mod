@@ -5,6 +5,9 @@
 difficulty = "03_normal"
 
 # Windows per-user overrides
-# Uncomment and add your Windows username to override the default:
-# [users]
-# "YourWindowsUsername" = "01_story"
+# Add as many users as needed. Replace "Alice"/"Bob" with actual Windows usernames.
+# The mod scans C:\Users\ and matches against Environment.UserName.
+# Users not listed here use the default difficulty above.
+[users]
+# "Alice" = "01_story"
+# "Bob" = "05_hard"

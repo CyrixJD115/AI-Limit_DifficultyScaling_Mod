@@ -43,13 +43,36 @@ public class ModMain : MelonMod
 
         if (OperatingSystem.IsWindows())
         {
-            var currentUser = Environment.UserName;
             var users = TomlConfig.Parse(configPath, "users");
-            var userPreset = TomlConfig.GetString(users, currentUser, null);
-            if (userPreset != null)
+            if (users.Count > 0)
             {
-                presetKey = userPreset;
-                MelonLogger.Msg($"{LOG} Windows user '{currentUser}' -> preset {presetKey}");
+                var userProfiles = new List<string>();
+                var profilesDir = @"C:\Users";
+                if (Directory.Exists(profilesDir))
+                {
+                    foreach (var dir in Directory.GetDirectories(profilesDir))
+                    {
+                        var name = Path.GetFileName(dir);
+                        if (name.StartsWith("Public") || name.StartsWith("Default") || name.StartsWith("All Users"))
+                            continue;
+                        userProfiles.Add(name);
+                    }
+                }
+
+                string currentUser = Environment.UserName;
+                if (userProfiles.Count > 0)
+                {
+                    var match = userProfiles.Find(u => u.Equals(currentUser, StringComparison.OrdinalIgnoreCase));
+                    if (match != null)
+                        currentUser = match;
+                }
+
+                var userPreset = TomlConfig.GetString(users, currentUser, null);
+                if (userPreset != null)
+                {
+                    presetKey = userPreset;
+                    MelonLogger.Msg($"{LOG} Windows user '{currentUser}' -> preset {presetKey}");
+                }
             }
         }
 
