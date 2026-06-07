@@ -30,15 +30,28 @@ public class ModMain : MelonMod
     public override void OnInitializeMelon()
     {
         var cfgDir = Path.Combine(MelonLoader.Utils.MelonEnvironment.ModsDirectory, "DifficultyScaling_cfg");
+        var configPath = Path.Combine(cfgDir, "config.toml");
 
-        var flagFiles = Directory.GetFiles(cfgDir, "difficulty.*");
-        if (flagFiles.Length == 0)
+        if (!File.Exists(configPath))
         {
-            MelonLogger.Error($"{LOG} No difficulty.* flag file found in DifficultyScaling_cfg/. Mod will use defaults.");
+            MelonLogger.Error($"{LOG} config.toml not found in DifficultyScaling_cfg/. Mod will use defaults.");
             return;
         }
 
-        var flagValue = Path.GetFileName(flagFiles[0]).Substring("difficulty.".Length).ToLowerInvariant();
+        var config = TomlConfig.Parse(configPath);
+        var presetKey = TomlConfig.GetString(config, "difficulty", "03_normal");
+
+        if (OperatingSystem.IsWindows())
+        {
+            var currentUser = Environment.UserName;
+            var users = TomlConfig.Parse(configPath, "users");
+            var userPreset = TomlConfig.GetString(users, currentUser, null);
+            if (userPreset != null)
+            {
+                presetKey = userPreset;
+                MelonLogger.Msg($"{LOG} Windows user '{currentUser}' -> preset {presetKey}");
+            }
+        }
 
         var diffDirs = Directory.GetDirectories(Path.Combine(cfgDir, "Difficulty"));
         string matchedDir = null;
@@ -48,7 +61,7 @@ public class ModMain : MelonMod
             var parts = folder.Split('_', 2);
             var num = parts[0];
             var name = parts.Length > 1 ? parts[1] : "";
-            if (folder == flagValue || num == flagValue || name.ToLowerInvariant() == flagValue)
+            if (folder == presetKey || num == presetKey || name.ToLowerInvariant() == presetKey)
             {
                 matchedDir = d;
                 break;
@@ -57,12 +70,12 @@ public class ModMain : MelonMod
 
         if (matchedDir == null)
         {
-            MelonLogger.Error($"{LOG} No preset matching '{flagValue}' found. Mod will use defaults.");
+            MelonLogger.Error($"{LOG} No preset matching '{presetKey}' found. Mod will use defaults.");
             return;
         }
 
-        var configPath = Path.Combine(matchedDir, "scaling.toml");
-        var cfg = TomlConfig.Parse(configPath);
+        var presetPath = Path.Combine(matchedDir, "scaling.toml");
+        var cfg = TomlConfig.Parse(presetPath);
 
         _playerAttackMult = TomlConfig.GetFloat(cfg, "player_attack_multiplier", 1.5f);
         _monsterAttackMult = TomlConfig.GetFloat(cfg, "monster_attack_multiplier", 0.4f);

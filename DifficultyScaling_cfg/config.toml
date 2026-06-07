@@ -1,0 +1,10 @@
+# Difficulty preset selection
+# Supports: custom, story, easy, normal, adept, hard
+# Also supports number format: 00, 01, 02, 03, 04, 05
+# Default: 03_normal
+difficulty = "03_normal"
+
+# Windows per-user overrides
+# Uncomment and add your Windows username to override the default:
+# [users]
+# "YourWindowsUsername" = "01_story"

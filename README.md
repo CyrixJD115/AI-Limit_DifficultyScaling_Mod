@@ -16,7 +16,7 @@ A MelonLoader mod for **AI Limit** that lets you customize game difficulty throu
    <game>/Mods/
        DifficultyScaling.dll
        DifficultyScaling_cfg/
-           difficulty.03_normal
+           config.toml
            Difficulty/
                00_custom/scaling.toml
                01_story/scaling.toml
@@ -25,23 +25,39 @@ A MelonLoader mod for **AI Limit** that lets you customize game difficulty throu
                04_adept/scaling.toml
                05_hard/scaling.toml
    ```
-3. **Select your difficulty** by renaming the flag file. For example, to play on Easy, rename:
-   - `difficulty.03_normal` -> `difficulty.02_easy`
 
 ## How to Change Difficulty
 
-The mod reads the empty flag file named `difficulty.<preset>` to determine which preset to load. You can use the **number** or **name** (case-insensitive):
+Edit `DifficultyScaling_cfg/config.toml` and set the `difficulty` value:
 
-| Flag File Name | Preset |
+```toml
+difficulty = "03_normal"
+```
+
+Supports preset name or number (case-insensitive):
+
+| Value | Preset |
 |---|---|
-| `difficulty.00` or `difficulty.custom` | Custom (edit the TOML yourself) |
-| `difficulty.01` or `difficulty.story` | Story |
-| `difficulty.02` or `difficulty.easy` | Easy |
-| `difficulty.03` or `difficulty.normal` | Normal |
-| `difficulty.04` or `difficulty.adept` | Adept (base game values) |
-| `difficulty.05` or `difficulty.hard` | Hard |
+| `00` or `custom` | Custom (edit the TOML yourself) |
+| `01` or `story` | Story |
+| `02` or `easy` | Easy |
+| `03` or `normal` | Normal |
+| `04` or `adept` | Adept (base game values) |
+| `05` or `hard` | Hard |
 
-Only one `difficulty.*` file should exist at a time.
+### Multi-User (Windows Only)
+
+If multiple people share the same PC, you can set per-user overrides in `config.toml`:
+
+```toml
+difficulty = "03_normal"
+
+[users]
+"Alice" = "01_story"
+"Bob" = "05_hard"
+```
+
+The mod detects the Windows username and loads that user's preset. Users not listed fall back to the default.
 
 ## Preset Values
 
@@ -67,7 +83,7 @@ All multipliers are relative to the base game. **Adept** is identical to vanilla
 
 ## Custom Preset
 
-Edit `DifficultyScaling_cfg/Difficulty/00_custom/scaling.toml` with your own values, then set the flag to `difficulty.00` or `difficulty.custom`:
+Edit `DifficultyScaling_cfg/Difficulty/00_custom/scaling.toml` with your own values, then set `config.toml` to `difficulty = "00"` or `difficulty = "custom"`:
 
 ```toml
 monster_attack_multiplier = 0.80
