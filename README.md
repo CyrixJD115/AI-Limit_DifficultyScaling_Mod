@@ -8,6 +8,16 @@ A MelonLoader mod for **AI Limit** that lets you customize game difficulty throu
 
 - [MelonLoader](https://melon-loader.com/) 0.7.3+ installed for AI Limit
 
+### Steam Deck / Linux (Proton)
+
+If running on Steam Deck or Linux via Proton, set this launch option in Steam:
+
+```
+WINEDLLOVERRIDES="version=n,b" %command%
+```
+
+Right-click AI Limit in Steam → Properties → General → Launch Options, paste the command above.
+
 ## Installation
 
 1. Download and install MelonLoader for AI Limit if you haven't already
