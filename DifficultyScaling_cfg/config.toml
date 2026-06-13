@@ -9,5 +9,5 @@ difficulty = "03_normal"
 # The mod scans C:\Users\ and matches against Environment.UserName.
 # Users not listed here use the default difficulty above.
 [users]
-# "Alice" = "01_story"
-# "Bob" = "05_hard"
+# Alice = "01_story"
+# Bob = "05_hard"

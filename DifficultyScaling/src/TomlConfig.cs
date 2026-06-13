@@ -39,7 +39,7 @@ public static class TomlConfig
             var eqIdx = line.IndexOf('=');
             if (eqIdx < 0) continue;
 
-            var key = line[..eqIdx].Trim();
+            var key = line[..eqIdx].Trim().Trim('"');
             var val = line[(eqIdx + 1)..].Trim().Trim('"');
 
             if (key.Length > 0 && val.Length > 0)
