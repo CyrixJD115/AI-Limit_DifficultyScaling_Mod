@@ -55,8 +55,8 @@ If multiple people share the same PC, you can set per-user overrides in [b]confi
 [code]difficulty = "03_normal"
 
 [users]
-"Alice" = "01_story"
-"Bob" = "05_hard"[/code]
+Alice = "01_story"
+Bob = "05_hard"[/code]
 
 The mod detects the Windows username and loads that user's preset. Users not listed fall back to the default.
 
@@ -95,6 +95,14 @@ player_defense_multiplier = 1.05
 player_hp_multiplier = 1.2
 crystal_multiplier = 1.0
 fall_death_height_multiplier = 1.0[/code]
+
+[b]Changelog[/b]
+
+[list]
+[*][b]v1.2.6[/b] — Fixed quoted TOML keys breaking Windows per-user difficulty overrides.
+[*][b]v1.2.5[/b] — Fixed fall death height scaling. Removed GetDeadHigh patch.
+[*][b]v1.2.4[/b] — Migrated to config.toml with Windows multi-user support.
+[/list]
 
 [b]Debug Logging[/b]
 
