@@ -7,7 +7,7 @@ using HarmonyLib;
 using Il2Cpp;
 using Il2CppInterop.Runtime;
 
-[assembly: MelonInfo(typeof(DifficultyScaling.ModMain), "AI Limit Difficulty Scaling", "1.2.6", "CyrixJD115")]
+[assembly: MelonInfo(typeof(DifficultyScaling.ModMain), "AI Limit Difficulty Scaling", "1.2.7", "CyrixJD115")]
 [assembly: MelonGame("SenseGames", "AILIMIT")]
 
 namespace DifficultyScaling;
@@ -128,8 +128,6 @@ public class ModMain : MelonMod
                 typeof(ModMain).GetMethod(nameof(MonsterDecreaseHpPrefix), BindingFlags.Static | BindingFlags.NonPublic), null),
             ("Player.GetHpMaxAttribute", playerType.GetMethod("GetHpMaxAttribute", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null),
                 null, typeof(ModMain).GetMethod(nameof(GetHpMaxPostfix), BindingFlags.Static | BindingFlags.NonPublic)),
-            ("Player.GetHPMax", playerType.GetMethod("GetHPMax", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null),
-                null, typeof(ModMain).GetMethod(nameof(GetHpMaxPostfix), BindingFlags.Static | BindingFlags.NonPublic)),
             ("Player.GetDefenseInfo",   playerType.GetMethod("GetDefenseInfo", new Type[] { typeof(bool) }),
                 null, typeof(ModMain).GetMethod(nameof(PlayerGetDefenseInfoPostfix), BindingFlags.Static | BindingFlags.NonPublic)),
             ("Monster.GetDefenseInfo",  monsterType.GetMethod("GetDefenseInfo", new Type[] { typeof(bool) }),
@@ -223,7 +221,8 @@ public class ModMain : MelonMod
         __result.nPoisonsDamageReductionRate *= _playerDefMult;
         __result.nPunctureDamageReductionRate *= _playerDefMult;
         __result.nInfectDamageReductionRate *= _playerDefMult;
-        if (_debug) MelonLogger.Msg($"{DBG} Player Def   scaled x{_playerDefMult}");
+        __result.MaxHp *= _playerHpMult;
+        if (_debug) MelonLogger.Msg($"{DBG} Player Def   scaled x{_playerDefMult} | MaxHP x{_playerHpMult}");
     }
 
     private static void MonsterGetDefenseInfoPostfix(ref DefenseInfo __result)

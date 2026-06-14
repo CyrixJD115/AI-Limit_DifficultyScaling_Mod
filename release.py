@@ -3,7 +3,7 @@
 
 Usage:
   python3 release.py              # build & zip DifficultyScaling
-  python3 release.py 1.2.6        # build & zip with explicit version
+  python3 release.py 1.2.7        # build & zip with explicit version
 
 Zip structure:
   DifficultyScaling.dll
